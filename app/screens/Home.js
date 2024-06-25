@@ -23,14 +23,17 @@ const Home = () => {
     <Tab.Screen name='Home' component={HomeScreen} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Home',tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
+          headerShown:false
         }} />
     <Tab.Screen name='Vote' component={Vote} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Vote',tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="vote-yea" color={color} size={size} />
           ),
+          headerShown:false
         }} />
     <Tab.Screen name='Result' component={Result} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Results',tabBarIcon: ({ color, size }) => (
             <Foundation name="results" color={color} size={size} />
           ),
+          headerShown:false
         }}/>
     <Tab.Screen name='Profile' component={Profile} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Profile',tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
