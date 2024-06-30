@@ -3,17 +3,18 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { server } from '../constants/config';
 
 const PositionsScreen = () => {
   const [positions, setPositions] = useState([]);
-  const [user, setUser] = useState(null); // State to hold user data
+  const [user, setUser] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await axios.get('http://192.168.1.171:8000/positions/');
+        const response = await axios.get(`${server}/positions/`);
         setPositions(response.data);
       } catch (error) {
         console.error('Error fetching positions:', error);
@@ -38,6 +39,8 @@ const PositionsScreen = () => {
     getUserData();
   }, []);
 
+  console.log('positions',positions);
+
   const handleNominate = async (positionId) => {
     try {
       const userData = await AsyncStorage.getItem('userData');
@@ -53,7 +56,7 @@ const PositionsScreen = () => {
       };
   
       const response = await axios.post(
-        'http://192.168.1.171:8000/nominees/',
+        `${server}/nominees/`,
         nomineeData,
         {
           headers: {
@@ -108,6 +111,8 @@ const PositionsScreen = () => {
       >
         <FlatList
           data={positions}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity

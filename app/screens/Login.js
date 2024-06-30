@@ -5,6 +5,7 @@ import { Input, Icon, Pressable } from "native-base";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { server } from "../constants/config";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -13,7 +14,7 @@ const Login = () => {
   const navigation = useNavigation();
 
   const handleLogin = () => {
-    axios.post('http://192.168.1.171:8000/login/', {
+    axios.post(`${server}/login/`, {
       email: email,
       password: password
     })
@@ -33,7 +34,7 @@ const Login = () => {
         });
     })
     .catch(error => {
-      console.error('Error logging in:', error.response);
+      console.error('Error logging in:', error.response.data);
       // Handle error (display message to user, etc.)
     });
   };
@@ -79,13 +80,13 @@ const Login = () => {
           }}
           InputLeftElement={
             <Icon
-              as={<Octicons name="mail" size={12} color="#00A313" />}
+              as={<Octicons name="number" size={12} color="#00A313" />}
               size={5}
               ml="2"
               color="muted.400"
             />
           }
-          placeholder="Email"
+          placeholder="Registration Number"
           onChangeText={(text) => setEmail(text)}
           value={email}
         />

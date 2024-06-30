@@ -9,7 +9,11 @@ export const homeScreen = [
     },
     {
         title: 'Election Positions',
-        description: 'step by step guide on how to vote'
+        description: 'view all positions'
+    },
+    {
+        title: 'Election Support',
+        description: ''
     },
  
 ]

@@ -12,8 +12,10 @@ import {
     FontAwesome6,
     FontAwesome5,
     Ionicons,
-    Foundation
+    Foundation,
+    Entypo
   } from "@expo/vector-icons";
+import TrendingNews from './TrendingNews'
 
 const Tab = createBottomTabNavigator()
 
@@ -25,6 +27,10 @@ const Home = () => {
           ),
           headerShown:false
         }} />
+        <Tab.Screen name='news' component={TrendingNews} options={{tabBarActiveTintColor:'#00A313',headerShown:false,tabBarLabel:'News',tabBarIcon: ({ color, size }) => (
+            <Entypo name="news" color={color} size={size} />
+          ),
+        }}/>
     <Tab.Screen name='Vote' component={Vote} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Vote',tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="vote-yea" color={color} size={size} />
           ),
@@ -35,10 +41,11 @@ const Home = () => {
           ),
           headerShown:false
         }}/>
-    <Tab.Screen name='Profile' component={Profile} options={{tabBarActiveTintColor:'#00A313',tabBarLabel:'Profile',tabBarIcon: ({ color, size }) => (
+    <Tab.Screen name='Profile' component={Profile} options={{tabBarActiveTintColor:'#00A313',headerShown:false,tabBarLabel:'Profile',tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
         }}/>
+        
    </Tab.Navigator>
   )
 }

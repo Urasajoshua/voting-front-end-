@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Ionicons } from "@expo/vector-icons";
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { server } from '../constants/config';
 
 const Level = ({ route }) => {
   const { title, level } = route.params;
@@ -12,7 +13,7 @@ const Level = ({ route }) => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.171:8000/positions/?level=${level}`);
+        const response = await axios.get(`${server}/positions/?level=${level}`);
         setPositions(response.data);
       } catch (error) {
         console.error('Error fetching positions:', error);
@@ -22,19 +23,23 @@ const Level = ({ route }) => {
     fetchPositions();
   }, [level]);
 
+  const handlePositionPress = (position) => {
+    navigation.navigate('nominees', { position: position.name, id: position.id }); // Passing id here
+  };
+
   return (
     <View style={{ flex: 1, paddingTop: 25, backgroundColor: 'white' }}>
-      <TouchableOpacity style={{position:'absolute',top:50,left:20}} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={{ position: 'absolute', top: 50, left: 20 }} onPress={() => navigation.goBack()}>
         <Ionicons name='chevron-back' size={20} />
       </TouchableOpacity>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "center", 
+          justifyContent: "center",
           paddingHorizontal: 15,
-          width: '100%', 
-          marginTop: 26 
+          width: '100%',
+          marginTop: 26
         }}
       >
         <Text style={{ color: "#00A313", fontSize: 20, textAlign: 'center' }}>
@@ -55,30 +60,32 @@ const Level = ({ route }) => {
           data={positions}
           keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
-            <View
-              style={{
-                backgroundColor: "#00A313",
-                margin: 10,
-                paddingVertical: 25,
-                borderRadius: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                style={{ color: "white", fontSize: 18, paddingHorizontal: 10, width: 180 }}
-              >
-                {item.name}
-              </Text>
-
+            <TouchableOpacity onPress={() => handlePositionPress(item)}>
               <View
                 style={{
-                  paddingHorizontal: 20
+                  backgroundColor: "#00A313",
+                  margin: 10,
+                  paddingVertical: 25,
+                  borderRadius: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                <Text style={{ color: "white", fontSize: 15 }}>{item.contenders}</Text>
+                <Text
+                  style={{ color: "white", fontSize: 18, paddingHorizontal: 10, width: 180 }}
+                >
+                  {item.name}
+                </Text>
+
+                <View
+                  style={{
+                    paddingHorizontal: 20
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 15 }}>{item.contenders}</Text>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>

@@ -2586,6 +2586,11 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
+abortcontroller-polyfill@^1.4.0:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.5.tgz#6738495f4e901fbb57b6c0611d0c75f76c485bed"
+  integrity sha512-JMJ5soJWP18htbbxJjG7bG6yuI6pRhgJ0scHHTfkUjf6wjP912xZWvM+A4sJK3gqd9E8fcPbDnOefbA9Th/FIQ==
+
 accepts@^1.3.7, accepts@^1.3.8, accepts@~1.3.5, accepts@~1.3.7:
   version "1.3.8"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.8.tgz#0bf0be125b67014adcb0b0921e62db7bffe16b2e"
@@ -3775,15 +3780,15 @@ escape-html@~1.0.3:
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
 
+escape-string-regexp@2.0.0, escape-string-regexp@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
+  integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
+
 escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==
-
-escape-string-regexp@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
-  integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
 
 escape-string-regexp@^4.0.0:
   version "4.0.0"
@@ -3848,12 +3853,22 @@ expo-asset@~10.0.6:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
+expo-av@~14.0.6:
+  version "14.0.6"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-14.0.6.tgz#ca0eaa74f64f93f3dad79ead2c0a8e6aaebb53c0"
+  integrity sha512-8FHKgMYo49C5hhgG0ssRRd454VQ82TuujhMdlz7ScJBihEXa89kWKpfk9bXrvetFtrJoAmYuGxsXCJCygZhxfA==
+
 expo-constants@~16.0.0:
   version "16.0.1"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-16.0.1.tgz#1285e29c85513c6e88e118289e2baab72596d3f7"
   integrity sha512-s6aTHtglp926EsugWtxN7KnpSsE9FCEjb7CgEjQQ78Gpu4btj4wB+IXot2tlqNwqv+x7xFe5veoPGfJDGF/kVg==
   dependencies:
     "@expo/config" "~9.0.0-beta.0"
+
+expo-document-picker@~12.0.2:
+  version "12.0.2"
+  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-12.0.2.tgz#b5c55d8bfe28d0b824e19bc0881b83cf96df634d"
+  integrity sha512-tmwuRWoCPv6SmNDSMEWcttMBJ95k8/g5sMWnHdmvOx0UKp0pFXP8FI+55HKtQpo6k2+118MkdDDhQSwKqASVAw==
 
 expo-file-system@~17.0.1:
   version "17.0.1"
@@ -3866,6 +3881,18 @@ expo-font@~12.0.5:
   integrity sha512-h/VkN4jlHYDJ6T6pPgOYTVoDEfBY0CTKQe4pxnPDGQiE6H+DFdDgk+qWVABGpRMH0+zXoHB+AEi3OoQjXIynFA==
   dependencies:
     fontfaceobserver "^2.1.0"
+
+expo-image-loader@~4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-4.7.0.tgz#d403106822de80bda12d644c82b7a3b7983c0f0b"
+  integrity sha512-cx+MxxsAMGl9AiWnQUzrkJMJH4eNOGlu7XkLGnAXSJrRoIiciGaKqzeaD326IyCTV+Z1fXvIliSgNW+DscvD8g==
+
+expo-image-picker@~15.0.6:
+  version "15.0.6"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-15.0.6.tgz#7adf19d0e8beff7327c269d93d5b4d5c3cc71916"
+  integrity sha512-WckDXKlvOwywOr5twCOyqTDwEhYHD2ty6k8V2qCWbHHKEVe6C0iGFQgHHIPFKY4E1yhlEADg1UMTt0mnhV2A9Q==
+  dependencies:
+    expo-image-loader "~4.7.0"
 
 expo-keep-awake@~13.0.2:
   version "13.0.2"
@@ -4515,6 +4542,11 @@ ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
+initials@^3.0.1:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/initials/-/initials-3.1.2.tgz#30a0f9f149f0654ddf1c6b36b588b525f882a4f8"
+  integrity sha512-Sltg35nx8+GX1w4U86rmbxFEmqFiSuMJviS6cB2KChB+jcT2/8Td+nlImXD74HkqpZF5PMv8hN57AyrA/7ltXw==
+
 inline-style-prefixer@^6.0.1:
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/inline-style-prefixer/-/inline-style-prefixer-6.0.4.tgz#4290ed453ab0e4441583284ad86e41ad88384f44"
@@ -4550,7 +4582,7 @@ intl-messageformat@^10.1.0:
     "@formatjs/icu-messageformat-parser" "2.7.8"
     tslib "^2.4.0"
 
-invariant@^2.2.4:
+invariant@2.2.4, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -6347,6 +6379,23 @@ react-native-svg@15.2.0:
   dependencies:
     css-select "^5.1.0"
     css-tree "^1.1.3"
+
+react-native-user-avatar@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-user-avatar/-/react-native-user-avatar-1.0.8.tgz#d3f5f1d538344a13bfa72026127a1fd6c3bba05e"
+  integrity sha512-OYm7cfEt0IjiL739OGwRZoBCCuAn6CectNcyi1tsa5WtDZjQm7eK0B1mymxZfqELZ847wcDIuevHM9obr4+kxw==
+  dependencies:
+    abortcontroller-polyfill "^1.4.0"
+    initials "^3.0.1"
+    prop-types "^15.7.2"
+
+react-native-webview@13.8.6:
+  version "13.8.6"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.8.6.tgz#5d4a62cb311d5ef8d910a8e112b3f1f2807bcd18"
+  integrity sha512-jtZ9OgB2AN6rhDwto6dNL3PtOtl/SI4VN93pZEPbMLvRjqHfxiUrilGllL5fKAXq5Ry5FJyfUi82A4Ii8olZ7A==
+  dependencies:
+    escape-string-regexp "2.0.0"
+    invariant "2.2.4"
 
 react-native@0.74.1:
   version "0.74.1"
