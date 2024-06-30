@@ -12,6 +12,7 @@ import SupportScreen from './app/screens/SupportScreen'
 import ElectionProcedures from './app/screens/ElectionProcedures'
 import Nominees from './app/screens/Nominees'
 import UploadFileScreen from './app/screens/UploadFileScreen'
+import OtpVerification from './app/screens/OtpVerification'
 
 const Stack = createStackNavigator()
 
@@ -31,6 +32,7 @@ const App = () => {
       <Stack.Screen name="procedures" component={ElectionProcedures} options={{headerShown:false}} />
       <Stack.Screen name="nominees" component={Nominees} options={{headerShown:false}} />
       <Stack.Screen name="upload" component={UploadFileScreen} options={{headerShown:false}} />
+      <Stack.Screen name="otp" component={OtpVerification} options={{headerShown:false}} />
       
     </Stack.Navigator>
     </NavigationContainer>

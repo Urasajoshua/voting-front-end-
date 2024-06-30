@@ -26,7 +26,7 @@ const Login = () => {
         .then(() => {
           console.log('User data saved in AsyncStorage:', userData);
           // Navigate to 'home' screen upon successful login
-          navigation.navigate('home');
+          navigation.navigate('otp');
         })
         .catch(error => {
           console.error('Error saving user data in AsyncStorage:', error);
