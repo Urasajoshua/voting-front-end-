@@ -45,6 +45,7 @@ const UploadFileScreen = () => {
   useEffect(() => {
     retrieveUserId();
   }, []);
+  console.log('user',user?.id);
 
   const pickFile = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
@@ -83,10 +84,10 @@ const UploadFileScreen = () => {
     }
   
     let formData = new FormData();
-    formData.append('user_id', 1); // Replace with user ID logic
+    formData.append('user_id', user.id); // Replace with user ID logic
     formData.append('material_type', materialType);
     formData.append('description', description); // Append description to formData
-  
+
     if (file.type === 'image' || file.type === 'video') {
       formData.append('file', {
         uri: file.uri,
