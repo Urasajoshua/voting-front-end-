@@ -40,7 +40,7 @@ const Result = () => {
     );
   }
 
-  console.log('results',results);
+  
 
   return (
     <View style={{ flex: 1, paddingTop: 25 }}>

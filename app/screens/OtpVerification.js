@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Input, Icon, Pressable } from 'native-base';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { server } from '../constants/config';
 
@@ -22,8 +22,13 @@ const OtpVerification = () => {
       })
       .then(response => {
         console.log(response.data);
-        // Navigate to 'home' screen upon successful OTP verification
-        navigation.navigate('home');
+        // Reset the navigation stack and navigate to 'home' screen upon successful OTP verification
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'home' }],
+          })
+        );
       })
       .catch(error => {
         console.error('Error verifying OTP:', error.response.data);

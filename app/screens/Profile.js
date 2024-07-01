@@ -1,56 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, StatusBar } from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CampainMaterial from './CampainMaterial';
+import { Modal, Button, Icon } from 'native-base'; // Import Modal and Button from NativeBase
 import { useNavigation } from '@react-navigation/native';
 
 const Profile = ({ route }) => {
-  const [user,setUser]=useState('')
-  const navigation = useNavigation()
+  const [user, setUser] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
+
   const retrieveUserId = async () => {
     try {
       const userData = await AsyncStorage.getItem('userData');
       if (userData !== null) {
         const parsedUserData = JSON.parse(userData);
-        
         setUser(parsedUserData);
       } else {
-        Alert.alert('Error', 'User ID not found in storage');
+        Alert.alert('Error', 'User data not found in storage');
       }
     } catch (error) {
-      console.error('Error retrieving user ID:', error);
+      console.error('Error retrieving user data:', error);
     }
   };
 
-  useEffect(()=>{
-    retrieveUserId()
-  })
-  
-  
+  useEffect(() => {
+    retrieveUserId();
+  }, []);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleLogout = async () => {
+    try {
+      navigation.navigate('login'); 
+      await AsyncStorage.clear()
+     
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
+      {/* Status Bar */}
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Personal Information</Text>
-       
+        
+        {/* Settings button */}
+        <TouchableOpacity style={styles.settingsButton} onPress={toggleModal}>
+          <Ionicons name="settings-outline" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Avatar */}
       <View style={styles.avatarContainer}>
         <UserAvatar size={120} name={`${user.firstname} ${user.lastname}`} src={user.profile_image} />
         {user.nominee && (
-          <TouchableOpacity style={styles.updateAvatarButton}>
-            <Text style={styles.updateAvatarButtonText}>Update Profile Image</Text>
+          <TouchableOpacity style={styles.updateAvatarButton} onPress={()=>navigation.navigate('upload')}>
+            <Text style={styles.updateAvatarButtonText}>Upload campaign material</Text>
           </TouchableOpacity>
-          
         )}
-
-<TouchableOpacity onPress={()=>navigation.navigate('upload')} style={styles.updateAvatarButton}>
-          <Text>upload election materials</Text>
-          </TouchableOpacity>
       </View>
 
       {/* Personal Information */}
@@ -61,12 +75,30 @@ const Profile = ({ route }) => {
         <Text style={styles.label}>Last Name:</Text>
         <Text style={styles.info}>{user.lastname}</Text>
 
-
-        <Text style={styles.label}>email:</Text>
+        <Text style={styles.label}>Email:</Text>
         <Text style={styles.info}>{user.email}</Text>
-
-        {/* Add other necessary information fields here */}
+  
       </View>
+
+      {/* Logout Modal */}
+      <Modal isOpen={isModalVisible} onClose={toggleModal} size="lg">
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>Settings</Modal.Header>
+          <Modal.Body>
+            <Button
+              onPress={handleLogout}
+              colorScheme="danger"
+              variant="solid"
+              size="lg"
+              mt={4}
+              startIcon={<Icon as={<Ionicons name="log-out-outline" />} size={5} color="#fff" />}
+            >
+              Logout
+            </Button>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 };
@@ -87,10 +119,12 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
+    flex: 1,
   },
-  backButton: {
+  settingsButton: {
     position: 'absolute',
-    left: 10,
+    right: 10,
+    padding: 10,
   },
   avatarContainer: {
     alignItems: 'center',

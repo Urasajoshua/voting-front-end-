@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Calendar } from 'react-native-calendars';
+import { Ionicons } from '@expo/vector-icons';
 
 const ElectionDetails = ({ route }) => {
   const { electionData } = route.params;
@@ -21,23 +23,41 @@ const ElectionDetails = ({ route }) => {
     },
   ];
 
+  const markedDates = {};
+  electionData.forEach(election => {
+    markedDates[election.start_date] = { marked: true, startingDay: true, color: '#00A313', textColor: 'white' };
+    markedDates[election.end_date] = { marked: true, endingDay: true, color: '#FF0000', textColor: 'white' };
+  });
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Election Calendar</Text>
-      {electionData && electionData.length > 0 ? (
-        electionData.map((election, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={styles.electionItem}
-            onPress={() => navigation.navigate('ElectionProcedures', { procedures })}
-          >
-            <Text style={styles.electionText}>🗓️ Election will start on: {new Date(election.start_date).toLocaleDateString()}</Text>
-            <Text style={styles.electionText}>⏰ And will end on: {new Date(election.end_date).toLocaleDateString()}</Text>
-          </TouchableOpacity>
-        ))
-      ) : (
-        <Text style={styles.noElectionsText}>No active elections at the moment.</Text>
-      )}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.header}>Election Calendar</Text>
+      </View>
+      <Calendar
+        markingType={'period'}
+        markedDates={markedDates}
+        onDayPress={(day) => {
+          const selectedElection = electionData.find(election => 
+            election.start_date === day.dateString || election.end_date === day.dateString
+          );
+          if (selectedElection) {
+            navigation.navigate('ElectionProcedures', { procedures });
+          }
+        }}
+      />
+      <View style={styles.datesContainer}>
+        {electionData.map((election, index) => (
+          <View key={index} style={styles.electionDates}>
+            <Text style={styles.dateTitle}>Election {index + 1}</Text>
+            <Text style={styles.dateText}>Start Date: {new Date(election.start_date).toLocaleDateString()}</Text>
+            <Text style={styles.dateText}>End Date: {new Date(election.end_date).toLocaleDateString()}</Text>
+          </View>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -48,32 +68,42 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f8f9fa',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    marginRight: 10,
+  },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
     color: '#343a40',
   },
-  electionItem: {
-    padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
+  datesContainer: {
+    marginTop: 20,
+  },
+  electionDates: {
     backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 3,
   },
-  electionText: {
-    fontSize: 18,
-    color: '#495057',
+  dateTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#343a40',
   },
-  noElectionsText: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#adb5bd',
+  dateText: {
+    fontSize: 16,
+    color: '#495057',
   },
 });
 

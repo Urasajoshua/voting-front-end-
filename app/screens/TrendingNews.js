@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, Image } from 'react-native';
 import axios from 'axios';
+import { Video } from 'expo-av'; // Import Video component from expo-av
 import { server } from '../constants/config';
 
 const TrendingNews = () => {
@@ -8,7 +9,7 @@ const TrendingNews = () => {
 
   useEffect(() => {
     fetchTrendingNews();
-  }, []);
+  }, [trendingNews]);
 
   const fetchTrendingNews = async () => {
     try {
@@ -23,21 +24,58 @@ const TrendingNews = () => {
     }
   };
 
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.newsItem}>
+        <Text style={styles.newsTitle}>{`${item.nominee.firstname} ${item.nominee.lastname}`}</Text>
+        <Text style={styles.newsDescription}>{item.description}</Text>
+        {renderMedia(item.file)}
+      </View>
+    );
+  };
+
+  const renderMedia = (fileUrl) => {
+    if (!fileUrl) {
+      return null;
+    }
+
+    // Check if fileUrl is an image URL (ends with .jpg, .jpeg, .png, etc.)
+    if (/\.(jpeg|jpg|png|gif)$/i.test(fileUrl)) {
+      return <Image source={{ uri: fileUrl }} style={styles.newsImage} />;
+    }
+
+    // Check if fileUrl is a video URL (ends with .mp4, .mov, etc.)
+    if (/\.(mp4|mov)$/i.test(fileUrl)) {
+      return (
+        <Video
+          source={{ uri: fileUrl }}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+          resizeMode="cover"
+          shouldPlay
+          style={styles.newsVideo}
+          useNativeControls // Enable native playback controls
+        />
+      );
+    }
+
+    // If fileUrl is neither an image nor a video URL, return a placeholder or handle as needed
+    return <Text>No preview available</Text>;
+  };
+
   return (
-    <View style={{ flex: 1, paddingTop: 25 }}>
+    <View style={styles.container}>
       <Text style={styles.trendingNews}>Trending News</Text>
       {trendingNews.length === 0 ? (
         <Text style={styles.noTrendingNews}>There is no trending news at this moment.</Text>
       ) : (
         <FlatList
           data={trendingNews}
-          renderItem={({ item }) => (
-            <View style={styles.newsItem}>
-              <Text style={styles.newsTitle}>{item.nominee.firstname} {item.nominee.lastname}</Text>
-              <Text style={styles.newsDescription}>{item.description}</Text>
-              <Image source={{ uri: item.file }} style={styles.newsImage} />
-            </View>
-          )}
+          horizontal={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
       )}
@@ -46,10 +84,16 @@ const TrendingNews = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 25,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff',
+  },
   trendingNews: {
     textAlign: 'center',
     marginTop: 15,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#00A313',
   },
@@ -60,14 +104,21 @@ const styles = StyleSheet.create({
     color: '#6c757d',
   },
   newsItem: {
+    marginBottom: 20,
     padding: 15,
-    borderBottomWidth: 0.4,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   newsTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#343a40',
+    marginBottom: 10,
   },
   newsDescription: {
     fontSize: 16,
@@ -75,6 +126,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   newsImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    resizeMode: 'cover',
+  },
+  newsVideo: {
     width: '100%',
     height: 200,
     borderRadius: 10,

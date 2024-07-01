@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, ActivityIndicator, Alert, Image } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
-import UserAvatar from 'react-native-user-avatar';
 import { Modal, Button } from 'native-base';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Nominees = ({ route }) => {
-  const { position,id } = route.params;
+  const { position, id } = route.params;
   const navigation = useNavigation();
   const [nominees, setNominees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,12 +47,14 @@ const Nominees = ({ route }) => {
     }
   };
 
+  
+
   const handleVotePress = async () => {
     try {
       const data = {
-        nominee_id: selectedNominee,  // Ensure this is the nominee ID
+        nominee_id: nominees?.[0]?.id,  // Ensure this is the nominee ID
         user_id: userId,              // Ensure this is the user ID
-        position_id: id               // Ensure this is the position ID
+        position_id: nominees?.[0].position.id             // Ensure this is the position ID
       };
       const response = await axios.post('http://192.168.1.171:8000/votes/', data);
   
@@ -67,7 +68,6 @@ const Nominees = ({ route }) => {
       Alert.alert(`${JSON.stringify(error.response.data.error)}`);
     }
   };
-  
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -81,10 +81,12 @@ const Nominees = ({ route }) => {
     );
   }
 
+  
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Ionicons name='chevron-back' size={20} color="#00A313" />
+        <Ionicons name='chevron-back' size={24} color='#00A313' />
       </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.headerText}>{position} Nominees</Text>
@@ -99,10 +101,14 @@ const Nominees = ({ route }) => {
               style={styles.nomineeItem}
               onPress={() => console.log(`Navigate to nominee profile: ${item.id}`)}
             >
-              <UserAvatar size={100} name={`${item.first_name} ${item.last_name}`} src="https://dummyimage.com/100x100/000/fff" />
+              <Image
+                source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} // Placeholder image
+                style={styles.avatar}
+              />
+              {console.log('iere',item)}
               <View style={styles.nomineeDetails}>
-                <Text style={styles.name}>{item.first_name} {item.last_name}</Text>
-                <Text style={styles.details}>{item.year ? `Year ${item.year}` : 'Year not specified'}</Text>
+                <Text style={styles.name}>{item?.user?.first_name} {item?.user?.last_name}</Text>
+                <Text style={styles.details}>{item?.user?.year ? `Year ${item?.user?.year}` : 'Year not specified'}</Text>
               </View>
               <TouchableOpacity
                 style={styles.voteButton}
@@ -159,6 +165,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
+    zIndex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -183,6 +190,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   nomineeDetails: {
     flex: 1,

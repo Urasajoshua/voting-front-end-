@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, Text, View, Image,TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome6, Ionicons } from '@expo/vector-icons';
-import { homeScreen } from '../constants';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 import { server } from '../constants/config';
+import { homeScreen } from '../constants';
 
 const HomeScreen = () => {
   const [electionData, setElectionData] = useState(null);
@@ -47,7 +47,11 @@ const HomeScreen = () => {
       navigation.navigate('ElectionDetails', { electionData });
     } else if (item.title === 'Election Positions') {
       navigation.navigate('PositionsScreen');
-    } else if (item.title === 'Election Support') {
+    } 
+    else if (item.title === 'Election Statistics') {
+      navigation.navigate('electionStatistics');
+    }
+    else if (item.title === 'Election Support') {
       navigation.navigate('Support'); // Navigate to SupportScreen
     } else if (item.title === 'Election Procedures') {
       const procedures = [
@@ -77,91 +81,117 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={{ flex: 1, paddingTop: 25 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 15 }}>
+    <View style={styles.container}>
+      <View style={styles.header}>
         <FontAwesome6 name="circle-dot" size={12} color="#00A313" />
-        <Text style={{ color: "#00A313", fontSize: 20 }}>Daruso Election</Text>
+        <Text style={styles.headerText}>Daruso Election</Text>
       </View>
-      <View style={{ marginTop: 10 }}>
-        <FlatList 
-          data={homeScreen} 
-          renderItem={({ item }) => (
-            <TouchableOpacity 
-              style={styles.itemContainer}
-              onPress={() => handleItemPress(item)}
-            >
-              <View style={{ gap: 1 }}>
-                <Text style={styles.itemTitle}>{item.title}</Text>
-                <Text style={styles.itemDescription}>{item.description}</Text>
-              </View>
-              <Ionicons name="chevron-forward-sharp" size={18} color="black" />
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-      <Text style={styles.trendingNews}>Trending News</Text>
-      {trendingNews.length === 0 ? (
-        <Text style={styles.noTrendingNews}>There is no trending news at this moment.</Text>
-      ) : (
-        <FlatList 
-          data={trendingNews}
-          renderItem={renderCampaignMaterial}
-          keyExtractor={item => item.id.toString()}
-        />
-      )}
+      <FlatList 
+        data={homeScreen} 
+        renderItem={({ item }) => (
+          <TouchableOpacity 
+            style={styles.itemContainer}
+            onPress={() => handleItemPress(item)}
+          >
+            <View style={styles.itemContent}>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
+            </View>
+            <Ionicons name="chevron-forward-sharp" size={18} color="black" />
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.title}
+      />
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    paddingTop: 25,
+    paddingHorizontal: 15,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginBottom: 20,
+  },
+  headerText: {
+    color: '#00A313',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   itemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 20,
-    borderWidth: 0.4,
-    paddingHorizontal: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  itemContent: {
+    flexDirection: 'column',
   },
   itemTitle: {
-    color: 'black',
+    color: '#343a40',
     fontWeight: 'bold',
-    fontSize: 22,
+    fontSize: 18,
+    marginBottom: 5,
   },
   itemDescription: {
-    color: 'black',
-    fontWeight: '500',
-    fontSize: 16,
+    color: '#6c757d',
+    fontSize: 14,
   },
   trendingNews: {
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: 20,
+    marginBottom: 15,
     fontSize: 22,
     fontWeight: 'bold',
     color: '#00A313',
   },
   noTrendingNews: {
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: 20,
     fontSize: 18,
     color: '#6c757d',
   },
   materialContainer: {
     padding: 15,
-    borderBottomWidth: 0.4,
-    borderBottomColor: '#ccc',
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
   nomineeName: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#343a40',
+    marginBottom: 5,
   },
   materialDescription: {
     fontSize: 16,
     color: '#495057',
+    marginBottom: 10,
   },
   materialImage: {
     width: '100%',
     height: 200,
-    marginTop: 10,
+    borderRadius: 8,
   },
 });
 

@@ -15,6 +15,9 @@ export const homeScreen = [
         title: 'Election Support',
         description: ''
     },
+    {
+        title:'Election Statistics'
+    }
  
 ]
 

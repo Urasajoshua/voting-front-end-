@@ -1,12 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const ElectionProcedures = ({ route }) => {
   const { procedures } = route.params;
+  const navigation = useNavigation();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Election Procedures</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.header}>Election Procedures</Text>
+      </View>
       {procedures && procedures.length > 0 ? (
         procedures.map((procedure, index) => (
           <View key={index} style={styles.procedureItem}>
@@ -27,13 +35,19 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f8f9fa',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop:20
+  },
+  backButton: {
+    marginRight: 10,
+  },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
     color: '#343a40',
-    paddingTop:15
   },
   procedureItem: {
     marginBottom: 20,

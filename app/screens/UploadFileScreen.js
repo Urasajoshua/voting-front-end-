@@ -1,16 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Alert, Image, TextInput } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Video } from 'expo-av';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UploadFileScreen = () => {
+  const [user, setUser] = useState(null);
   const [file, setFile] = useState(null);
-  const [nominee, setNominee] = useState('1'); // Replace with actual nominee ID
   const [materialType, setMaterialType] = useState('image'); // Replace with actual material type
-  const [description, setDescription] = useState('Sample description'); // Replace with actual description
+  const [description, setDescription] = useState(''); // State for description
+  const [isNominee, setIsNominee] = useState(false);
+  const [nomineeId, setNomineeId] = useState(null);
+
+  const retrieveUserId = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData !== null) {
+        const parsedUserData = JSON.parse(userData);
+        setUser(parsedUserData);
+        checkIfUserIsNominee(parsedUserData.id);
+      } else {
+        Alert.alert('Error', 'User data not found in storage');
+      }
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+    }
+  };
+
+  const checkIfUserIsNominee = async (userId) => {
+    try {
+      const response = await axios.get(`http://192.168.1.171:8000/info/${userId}/`);
+      if (response.data.is_nominee) {
+        setIsNominee(true);
+        setNomineeId(response.data.nominee_info.id);
+      }
+    } catch (error) {
+      console.error('Error checking nominee status:', error);
+    }
+  };
+
+  useEffect(() => {
+    retrieveUserId();
+  }, []);
 
   const pickFile = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
@@ -30,25 +64,40 @@ const UploadFileScreen = () => {
       setFile(result.assets[0]);
     }
   };
+  
 
   const uploadFile = async () => {
     if (!file) {
       Alert.alert('No file selected', 'Please select a file to upload.');
       return;
     }
-
+  
+    if (!isNominee) {
+      Alert.alert('Permission Denied', 'Only nominees can upload campaign materials.');
+      return;
+    }
+  
+    if (!description) {
+      Alert.alert('Missing Description', 'Please provide a description for the file.');
+      return;
+    }
+  
     let formData = new FormData();
-    formData.append('nominee', nominee);
+    formData.append('user_id', 1); // Replace with user ID logic
     formData.append('material_type', materialType);
-    formData.append('description', description);
-    formData.append('file', {
-      uri: file.uri,
-      name: file.name || `filename.${file.uri.split('.').pop()}`,
-      type: file.mimeType || 'application/octet-stream',
-    });
-
-    console.log('jhjhjh',formData);
-
+    formData.append('description', description); // Append description to formData
+  
+    if (file.type === 'image' || file.type === 'video') {
+      formData.append('file', {
+        uri: file.uri,
+        name: file.name || `filename.${file.uri.split('.').pop()}`,
+        type: file.mimeType || 'application/octet-stream',
+      });
+    } else {
+      Alert.alert('Unsupported File Type', 'Please select an image or video file.');
+      return;
+    }
+  
     try {
       const response = await axios.post('http://192.168.1.171:8000/campaign_materials/', formData, {
         headers: {
@@ -56,11 +105,17 @@ const UploadFileScreen = () => {
         },
       });
       Alert.alert('Success', 'File uploaded successfully.');
+  
+      // Clear form data after successful upload
+      setFile(null);
+      setDescription('');
     } catch (error) {
       console.error('Upload error:', error.response.data);
       Alert.alert('Error', 'Failed to upload file.');
     }
   };
+  
+  
 
   const handleFilePreviewClick = () => {
     setFile(null);
@@ -72,9 +127,7 @@ const UploadFileScreen = () => {
       <TouchableOpacity style={styles.button} onPress={pickImage}>
         <Text style={styles.buttonText}>Pick an Image</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={pickFile}>
-        <Text style={styles.buttonText}>Pick a Document</Text>
-      </TouchableOpacity>
+    
       {file && (
         <TouchableOpacity style={styles.previewContainer} onPress={handleFilePreviewClick}>
           {file.type === 'image' ? (
@@ -103,6 +156,13 @@ const UploadFileScreen = () => {
           <Text style={styles.changeButtonText}>Change File</Text>
         </TouchableOpacity>
       )}
+      <TextInput
+        style={styles.descriptionInput}
+        placeholder="Enter description..."
+        value={description}
+        onChangeText={setDescription}
+        multiline
+      />
       <Button title="Upload File" onPress={uploadFile} />
     </View>
   );
@@ -163,6 +223,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+  },
+  descriptionInput: {
+    height: 100,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+    width: '100%',
   },
 });
 

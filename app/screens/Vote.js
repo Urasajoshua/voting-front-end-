@@ -1,14 +1,7 @@
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { FontAwesome6 } from "@expo/vector-icons";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import React from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const Vote = () => {
   const navigation = useNavigation();
@@ -18,71 +11,101 @@ const Vote = () => {
     { name: 'University Level', level: 'university' }
   ];
 
+  const renderLevelItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('level', { title: item.name, level: item.level })}
+      style={styles.levelItem}
+    >
+      <View style={styles.levelInfo}>
+        <Text style={styles.levelName}>{item.name}</Text>
+        <Text style={styles.levelDescription}>Tap to view details and vote</Text>
+      </View>
+      <View style={styles.voteButtonContainer}>
+        <Text style={styles.voteButtonText}>Vote</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={{ flex: 1, paddingTop: 25 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-          paddingHorizontal: 15,
-        }}
-      >
-        <FontAwesome6 name="circle-dot" size={12} color="#00A313" />
-        <Text style={{ color: "#00A313", fontSize: 20 }}>Daruso Election</Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <FontAwesome6 name="circle-dot" size={24} color="#00A313" style={styles.icon} />
+        <Text style={styles.headerText}>Daruso Election</Text>
       </View>
 
-      <View
-        style={{
-          marginTop: 10,
-          paddingHorizontal: 20,
-          justifyContent: "flex-start",
-          backgroundColor: "white",
-          overflow: "hidden",
-        }}
-      >
-        <FlatList
-          data={levels}
-          keyExtractor={(item) => item.level}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("level", { title: item.name, level: item.level })
-              }
-              style={{
-                backgroundColor: "#00A313",
-                margin: 10,
-                paddingVertical: 25,
-                borderRadius: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                style={{ color: "white", fontSize: 18, paddingHorizontal: 10 }}
-              >
-                {item.name}
-              </Text>
-
-              <TouchableOpacity
-                style={{
-                  borderColor: "white",
-                  paddingHorizontal: 20,
-                  borderWidth: 0.5,
-                  marginRight: 10,
-                  borderRadius: 5,
-                }}
-              >
-                <Text style={{ color: "white", fontSize: 15 }}>vote</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+      {/* Levels List */}
+      <FlatList
+        data={levels}
+        keyExtractor={(item) => item.level}
+        renderItem={renderLevelItem}
+        contentContainerStyle={styles.levelsList}
+      />
     </View>
   );
 };
 
-export default Vote;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    paddingHorizontal: 20,
+    paddingTop: 25,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00A313',
+  },
+  levelsList: {
+    paddingTop: 10,
+  },
+  levelItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    marginBottom: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  levelInfo: {
+    flex: 1,
+  },
+  levelName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#343a40',
+  },
+  levelDescription: {
+    fontSize: 14,
+    color: '#495057',
+  },
+  voteButtonContainer: {
+    backgroundColor: '#00A313',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  voteButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
-const styles = StyleSheet.create({});
+export default Vote;

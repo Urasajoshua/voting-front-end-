@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { server } from '../constants/config';
 
 const PositionsScreen = () => {
@@ -18,12 +18,12 @@ const PositionsScreen = () => {
         setPositions(response.data);
       } catch (error) {
         console.error('Error fetching positions:', error);
+        Alert.alert('Error', 'Failed to fetch positions. Please try again.');
       }
     };
 
     fetchPositions();
-    
-    // Fetch user data from AsyncStorage
+
     const getUserData = async () => {
       try {
         const userData = await AsyncStorage.getItem('userData');
@@ -33,13 +33,12 @@ const PositionsScreen = () => {
         }
       } catch (error) {
         console.error('Error fetching user data from AsyncStorage:', error);
+        Alert.alert('Error', 'Failed to fetch user data. Please try again.');
       }
     };
 
     getUserData();
   }, []);
-
-  console.log('positions',positions);
 
   const handleNominate = async (positionId) => {
     try {
@@ -47,14 +46,13 @@ const PositionsScreen = () => {
       if (!userData) {
         throw new Error('User data not found in AsyncStorage');
       }
-      const { id: user_id, email: user_email } = JSON.parse(userData);
-  
+      const { id: user_id } = JSON.parse(userData);
+
       const nomineeData = {
-        position: positionId,
+        position: positionId, // Correct the field name to match the backend expectation
         user_id,
-        user_email,
       };
-  
+
       const response = await axios.post(
         `${server}/nominees/`,
         nomineeData,
@@ -64,14 +62,22 @@ const PositionsScreen = () => {
           },
         }
       );
-  
+
       Alert.alert('Nomination Submitted', 'Your nomination has been submitted and is awaiting approval.');
     } catch (error) {
-      console.error('Error submitting nomination:', error);
-      Alert.alert('Error', 'There was an error submitting your nomination. Please try again.');
+      if (error.response) {
+    
+        Alert.alert('Error', error.response.data.detail || 'Failed to nominate. Please try again.');
+      } else if (error.request) {
+        
+        Alert.alert('Error', 'No response received from server. Please check your network connection.');
+      } else {
+    
+        Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
+      }
     }
   };
-  
+
   if (!user) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -89,10 +95,10 @@ const PositionsScreen = () => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "center", 
+          justifyContent: "center",
           paddingHorizontal: 15,
-          width: '100%', 
-          marginTop: 26 
+          width: '100%',
+          marginTop: 26
         }}
       >
         <Text style={{ color: "#00A313", fontSize: 20, textAlign: 'center' }}>
@@ -116,23 +122,11 @@ const PositionsScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={{
-                backgroundColor: "#00A313",
-                margin: 10,
-                paddingVertical: 25,
-                borderRadius: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
+              style={styles.positionItem}
               onPress={() => handleNominate(item.id)}
             >
-              <Text
-                style={{ color: "white", fontSize: 18, paddingHorizontal: 10 }}
-              >
-                {item.name}
-              </Text>
-
-              <Text style={{ color: "white", fontSize: 15 }}>Nominate</Text>
+              <Text style={styles.positionText}>{item.name}</Text>
+              <Text style={styles.nominateText}>Nominate</Text>
             </TouchableOpacity>
           )}
         />
@@ -143,4 +137,23 @@ const PositionsScreen = () => {
 
 export default PositionsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  positionItem: {
+    backgroundColor: "#00A313",
+    marginVertical: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  positionText: {
+    color: "white",
+    fontSize: 18,
+  },
+  nominateText: {
+    color: "white",
+    fontSize: 16,
+  },
+});

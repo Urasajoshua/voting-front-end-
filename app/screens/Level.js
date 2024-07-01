@@ -1,5 +1,5 @@
-import { Text, TouchableOpacity, View, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -28,69 +28,83 @@ const Level = ({ route }) => {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: 25, backgroundColor: 'white' }}>
-      <TouchableOpacity style={{ position: 'absolute', top: 50, left: 20 }} onPress={() => navigation.goBack()}>
-        <Ionicons name='chevron-back' size={20} />
+    <View style={styles.container}>
+      {/* Back button */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name='chevron-back' size={24} color='#00A313' />
       </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingHorizontal: 15,
-          width: '100%',
-          marginTop: 26
-        }}
-      >
-        <Text style={{ color: "#00A313", fontSize: 20, textAlign: 'center' }}>
-          {title}
-        </Text>
+
+      {/* Title */}
+      <View style={styles.header}>
+        <Text style={styles.title}>{title}</Text>
       </View>
 
-      <View
-        style={{
-          marginTop: 10,
-          paddingHorizontal: 20,
-          justifyContent: "flex-start",
-          backgroundColor: "white",
-          overflow: "hidden",
-        }}
-      >
-        <FlatList
-          data={positions}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handlePositionPress(item)}>
-              <View
-                style={{
-                  backgroundColor: "#00A313",
-                  margin: 10,
-                  paddingVertical: 25,
-                  borderRadius: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text
-                  style={{ color: "white", fontSize: 18, paddingHorizontal: 10, width: 180 }}
-                >
-                  {item.name}
-                </Text>
-
-                <View
-                  style={{
-                    paddingHorizontal: 20
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 15 }}>{item.contenders}</Text>
-                </View>
+      {/* Positions List */}
+      <FlatList
+        data={positions}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handlePositionPress(item)}>
+            <View style={styles.positionItem}>
+              <Text style={styles.positionName}>{item.name}</Text>
+              <View style={styles.contendersContainer}>
+                <Text style={styles.contendersText}>{item.contenders}</Text>
               </View>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingTop: 25,
+    paddingHorizontal: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 26,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#00A313',
+  },
+  positionItem: {
+    backgroundColor: '#00A313',
+    marginVertical: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  positionName: {
+    fontSize: 18,
+    color: 'white',
+    width: 180, // Adjust width as needed
+  },
+  contendersContainer: {
+    paddingHorizontal: 20,
+  },
+  contendersText: {
+    fontSize: 15,
+    color: 'white',
+  },
+});
 
 export default Level;
