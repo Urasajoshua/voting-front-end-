@@ -5,11 +5,32 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { server } from '../constants/config';
 import { homeScreen } from '../constants';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
   const [electionData, setElectionData] = useState(null);
   const [trendingNews, setTrendingNews] = useState([]); // Added state for trending news
   const navigation = useNavigation();
+  const [user,setUser]= useState('')
+
+
+  const retrieveUserId = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData !== null) {
+        const parsedUserData = JSON.parse(userData);
+        setUser(parsedUserData);
+      } else {
+        Alert.alert('Error', 'User data not found in storage');
+      }
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    retrieveUserId();
+  }, []);
 
   const fetchElectionData = async () => {
     try {
@@ -46,7 +67,7 @@ const HomeScreen = () => {
     if (item.title === 'Election Calendars') {
       navigation.navigate('ElectionDetails', { electionData });
     } else if (item.title === 'Election Positions') {
-      navigation.navigate('PositionsScreen');
+      navigation.navigate('PositionsScreen',{position:user?.colleage});
     } 
     else if (item.title === 'Election Statistics') {
       navigation.navigate('electionStatistics');

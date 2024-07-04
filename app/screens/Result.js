@@ -10,6 +10,7 @@ import {
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { server } from "../constants/config";
 
 const Result = () => {
   const navigation = useNavigation();
@@ -19,7 +20,7 @@ const Result = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await axios.get('http://192.168.1.171:8000/election_results/'); // Replace with your actual endpoint
+        const response = await axios.get(`${server}/election_results/`); // Replace with your actual endpoint
         const sortedResults = response.data.sort((a, b) => b.vote_count - a.vote_count);
         setResults(sortedResults);
       } catch (error) {
@@ -31,6 +32,7 @@ const Result = () => {
 
     fetchResults();
   }, [results]);
+  
 
   if (loading) {
     return (

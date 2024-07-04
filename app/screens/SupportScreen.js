@@ -1,22 +1,63 @@
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import axios from 'axios'; // Import axios
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 
-const mockNominees = [
-  { id: 1, firstName: 'John', lastName: 'Smith', course: 'Computer Science', year: '3', position: 'Chairperson' },
-  { id: 2, firstName: 'Jane', lastName: 'Doe', course: 'Electrical Engineering', year: '2', position: 'General Secretary' },
-  { id: 3, firstName: 'Mike', lastName: 'Brown', course: 'Mechanical Engineering', year: '4', position: 'USRC' },
-  { id: 4, firstName: 'Emily', lastName: 'Johnson', course: 'Civil Engineering', year: '1', position: 'President' },
-  { id: 5, firstName: 'Anna', lastName: 'Williams', course: 'Biomedical Engineering', year: '3', position: 'Vice President' },
-];
-
 const SupportScreen = () => {
-  const [nominees, setNominees] = useState(mockNominees);
-  const navigation = useNavigation();
+  const [nominees, setNominees] = useState([]);
+  const [user,setUser] = useState('')
+  const navigation = useNavigation()
+
+  const retrieveUserId = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData !== null) {
+        const parsedUserData = JSON.parse(userData);
+        setUser(parsedUserData);
+      } else {
+        Alert.alert('Error', 'User data not found in storage');
+      }
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    retrieveUserId();
+  }, []);
+
+
+  useEffect(() => {
+    fetchNominees();
+  }, []);
+
+  const fetchNominees = async () => {
+    try {
+      const response = await axios.get('http://192.168.1.171:8000/nominees/approved_false/'); 
+      setNominees(response.data);
+    } catch (error) {
+      console.error('Error fetching nominees:', error);
+    }
+  };
+
+  
 
   const handleSupport = (nomineeId) => {
-    // Placeholder function for handling support action
-    alert(`Support action for nominee with ID ${nomineeId}`);
+    const data = {
+      user_id : user?.id,
+      nominee_id: nomineeId
+    }
+
+    console.log('data',data);
+
+    axios.post('http://192.168.1.171:8000/supports/',data).then((response)=>{
+      alert('support successfuly')
+    }).catch((error)=>{
+      console.log('errr',error.response.data);
+      alert(`You have already supported this nominee.`)
+    })
+   
   };
 
   return (
@@ -36,9 +77,16 @@ const SupportScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.nomineeItem}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.nomineeName}>{`${item.firstName} ${item.lastName}`}</Text>
-              <Text style={styles.nomineeDetails}>{`${item.course}, Year ${item.year}`}</Text>
-              <Text style={styles.nomineePosition}>{item.position}</Text>
+              <Text style={styles.nomineeName}>{`${item.user.first_name} ${item.user.last_name}`}</Text>
+              <Text style={styles.nomineeDetails}>{item.purpose}</Text>
+              <Text style={styles.nomineePosition}>{item.position?.name}</Text>
+            </View>
+            <View style={{ justifyContent: 'center' }}>
+              {/* <Image
+                source={{ uri: item.image }}
+                style={styles.nomineeImage}
+                resizeMode="cover"
+              /> */}
             </View>
             <TouchableOpacity
               style={styles.supportButton}
@@ -65,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00A313',
     paddingVertical: 15,
     paddingHorizontal: 15,
-    marginTop:20
+    marginTop: 20,
   },
   headerText: {
     color: 'white',
@@ -97,6 +145,11 @@ const styles = StyleSheet.create({
   nomineePosition: {
     fontSize: 16,
     color: 'blue',
+  },
+  nomineeImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   supportButton: {
     backgroundColor: '#00A313',

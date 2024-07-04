@@ -9,6 +9,7 @@ const Signup = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [year, setYear] = useState("");
+  const [college,setCollege] = useState("")
 
   const handleSignup = () => {
     axios.post(`${server}/signup/`, {
@@ -17,6 +18,7 @@ const Signup = ({ navigation }) => {
       first_name: firstName,
       last_name: lastName,
       year: year,
+      college:college
     })
     .then(response => {
       Alert.alert('Signup Successful', 'You can now login with your credentials.');
@@ -55,6 +57,12 @@ const Signup = ({ navigation }) => {
         placeholder="Last Name"
         onChangeText={text => setLastName(text)}
         value={lastName}
+      />
+       <TextInput
+        style={styles.input}
+        placeholder="colleage"
+        onChangeText={text => setCollege(text)}
+        value={college}
       />
       <TextInput
         style={styles.input}

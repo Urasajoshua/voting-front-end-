@@ -52,10 +52,13 @@ const Nominees = ({ route }) => {
   const handleVotePress = async () => {
     try {
       const data = {
-        nominee_id: nominees?.[0]?.id,  // Ensure this is the nominee ID
+        nominee_id: selectedNominee,  // Ensure this is the nominee ID
         user_id: userId,              // Ensure this is the user ID
         position_id: nominees?.[0].position.id             // Ensure this is the position ID
       };
+
+
+      
       const response = await axios.post('http://192.168.1.171:8000/votes/', data);
   
       if (response.status === 201) {
