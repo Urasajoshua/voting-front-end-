@@ -48,7 +48,7 @@ const PositionsScreen = ({route}) => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await axios.get(`${server}/positions/`);
+        const response = await axios.get(`${server}/position/`);
         setPositions(response.data);
       } catch (error) {
         console.error("Error fetching positions:", error);

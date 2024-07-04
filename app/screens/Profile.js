@@ -60,11 +60,11 @@ const Profile = ({ route }) => {
       {/* Avatar */}
       <View style={styles.avatarContainer}>
         <UserAvatar size={120} name={`${user.firstname} ${user.lastname}`} src={user.profile_image} />
-        {user.nominee && (
+        
           <TouchableOpacity style={styles.updateAvatarButton} onPress={()=>navigation.navigate('upload')}>
             <Text style={styles.updateAvatarButtonText}>Upload campaign material</Text>
           </TouchableOpacity>
-        )}
+        
       </View>
 
       {/* Personal Information */}
